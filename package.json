@@ -20,5 +20,9 @@
   "devDependencies": {
     "jasmine": "^2.6.0",
     "sinon": "^2.3.5"
+  },
+  "dependencies": {
+    "cli-interact": "^0.1.9",
+    "inquirer": "^6.0.0"
   }
 }
