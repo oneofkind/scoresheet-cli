@@ -83,7 +83,11 @@ const getStudentIds = () => {
     }];
     inquirer.prompt(qs).then(answers => {
         let arr = answers.id.split(',')
+        // 转化为数组
         ids = arr.map(item => item * 1)
+        // 去重
+        let set = new Set(ids);
+        ids = Array.from(set);
         getScoreSheet()
     });
 }
@@ -95,11 +99,10 @@ const getStudentInfo = () => {
     let qs = [{
         type: 'input',
         name: 'id',
-        message: "what's the student's id (Type:Number)",
+        message: "what's the student's id",
         validate: function (input) {
-            if (!isNaN(input * 1)) {
-                return true;
-            }
+            var valid = !isNaN(parseFloat(input));
+            return valid || 'Please enter a number';
         }
     }, {
         type: 'input',
@@ -123,9 +126,8 @@ const getStudentInfo = () => {
             return '60';
         },
         validate: function (input) {
-            if (!isNaN(input * 1)) {
-                return true;
-            }
+            var valid = !isNaN(parseFloat(input));
+            return valid || 'Please enter a number';
         }
     }, {
         type: 'input',
@@ -135,9 +137,8 @@ const getStudentInfo = () => {
             return '60';
         },
         validate: function (input) {
-            if (!isNaN(input * 1)) {
-                return true;
-            }
+            var valid = !isNaN(parseFloat(input));
+            return valid || 'Please enter a number';
         }
     }, {
         type: 'input',
@@ -147,9 +148,8 @@ const getStudentInfo = () => {
             return '60';
         },
         validate: function (input) {
-            if (!isNaN(input * 1)) {
-                return true;
-            }
+            var valid = !isNaN(parseFloat(input));
+            return valid || 'Please enter a number';
         }
     }, {
         type: 'input',
@@ -159,9 +159,8 @@ const getStudentInfo = () => {
             return '60';
         },
         validate: function (input) {
-            if (!isNaN(input * 1)) {
-                return true;
-            }
+            var valid = !isNaN(parseFloat(input));
+            return valid || 'Please enter a number';
         }
     }];
 
@@ -193,15 +192,36 @@ const makeSheet = (arr) => {
     str[0] = `----------------- 成绩单 -------------------`
     str[1] = `姓名 | 数学 | 语文 | 英语 | 编程 | 平均分 | 总分`
     str[2] = `=== === === === === === === === === === ===`
+    let totalScoreArr = []
     arr.forEach(r => {
         let result = `${r.name} | ${r.mathScore} | ${r.chineseScore} | ${r.englishScore } | ${r.programScore} | ${r.averageScore} | ${r.totalScore}`
+        totalScoreArr.push(r.totalScore);
         str.push(result)
     })
     str.push(`=== === === === === === === === === === ===`)
 
+    let AverageTotalScore = parseFloat((totalScoreArr.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue;
+    }, 0)) / totalScoreArr.length)
+    AverageTotalScore = '全班总分平均分:' + AverageTotalScore
+    str.push(AverageTotalScore);
+    let midTotalScore = totalScoreArr.sort((a, b) => {
+        return a - b;
+    })
+    // console.log('midTotalScore', midTotalScore);
+
+    if (midTotalScore.length % 2 == 0) {
+        midTotalScore = (midTotalScore[midTotalScore.length / 2] + midTotalScore[midTotalScore.length / 2 - 1]) / 2;
+    } else {
+        midTotalScore = midTotalScore[(midTotalScore.length - 1) / 2];
+    }
+    midTotalScore = '全班总分中位数:' + midTotalScore
+    str.push(midTotalScore);
     str.forEach(s => {
         console.log(s);
     })
+
+    getOption()
 }
 
 /**
